@@ -19,6 +19,7 @@ function getWeatherIcon(wmoCode) {
 }
 
 function formatDay(dateStr) {
+  console.log(dateStr);
   return new Intl.DateTimeFormat("en", {
     weekday: "short",
   }).format(new Date(dateStr));

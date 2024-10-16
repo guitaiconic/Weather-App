@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Weather } from "./Weather";
+import React, { useEffect, useRef, useState } from "react";
+import { Weather } from "./component/presentation/Weather";
+import useLocalStorageState from "./component/state/useLocalStorageState";
 
 const convertToFlag = (countryCode) => {
   const codePoints = countryCode
@@ -10,7 +11,7 @@ const convertToFlag = (countryCode) => {
 };
 
 const App = () => {
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useLocalStorageState("", "location");
   const [weather, setWeather] = useState({});
   const [displayLocation, setDisplayLocation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +20,11 @@ const App = () => {
   useEffect(
     function () {
       async function fetchWeather() {
-        if (!location) return;
+        if (location.length < 3) {
+          setWeather({});
+          setDisplayLocation("");
+          return;
+        }
 
         setIsLoading(true);
         setError(null);
@@ -72,8 +77,7 @@ const App = () => {
         <p>Loading...</p>
       ) : (
         <div>
-          <h2>{displayLocation}</h2>
-          <Weather weather={weather} />
+          <Weather weather={weather} location={location} />
           {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
       )}
